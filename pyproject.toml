@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "sebo"
+version = "0.1.0"
+description = ""
+authors = ["catsocks <3389801+catsocks@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "sebo"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Django = "^4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
