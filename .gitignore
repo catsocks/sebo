@@ -1,0 +1,9 @@
+# catsocks
+NOTES.md
+
+# sebo
+.env
+.env.*
+!.env.*sample
+*.sqlite3
+static/

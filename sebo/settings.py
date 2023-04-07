@@ -11,21 +11,46 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, []),
+    SECURE_SSL_REDIRECT=(bool, False),
+    SECURE_HSTS_SECONDS=(int, 0),
+    CSRF_COOKIE_SECURE=(bool, False),
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Take environment variables from .env file.
+env.read_env(env.path('ENV_PATH', BASE_DIR / '.env'))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$z)yvy&iznbyp(wn&d1i(z$qf)g)#5g!3lg58j4d&414p_vk(2'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+
+
+# Extra security settings for production
+
+# Redirect all non-HTTPS requests to HTTPS with SecurityMiddleware.
+SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT')
+
+# A non-zero value sets the HTTP Strict Transport Security header.
+# WARNING: Read the docs. This can break the site.
+SECURE_HSTS_SECONDS = env('SECURE_HSTS_SECONDS')
+
+# Mark CSRF cookie as "secure".
+CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE')
 
 
 # Application definition
@@ -75,10 +100,7 @@ WSGI_APPLICATION = 'sebo.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db(),
 }
 
 
@@ -117,6 +139,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
